@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── NextAuth Models ──────────────────────────────────────────────────────────
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── App Models ───────────────────────────────────────────────────────────────
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For email/password auth
+  plan          String    @default("free") // "free" | "pro" | "enterprise"
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // App relations
+  trades        Trade[]
+  journalEntries JournalEntry[]
+  brokers       Broker[]
+  strategies    Strategy[]
+}
+
+model Trade {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brokerId   String?
+  broker     Broker?  @relation(fields: [brokerId], references: [id], onDelete: SetNull)
+
+  // Core fields
+  date        DateTime
+  symbol      String
+  side        String   // "LONG" | "SHORT"
+  qty         Float
+  entryPrice  Float
+  exitPrice   Float
+  fees        Float    @default(0)
+
+  // Optional
+  risk        Float?
+  strategy    String?
+  notes       String?
+  tags        String?
+  imageUrl    String?
+  setupGrade  String?  // "A" | "B" | "C" | "D"
+  emotionScore Int?    // 1-5
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([brokerId])
+  @@index([date])
+  @@index([symbol])
+}
+
+model JournalEntry {
+  id     String   @id @default(cuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   DateTime
+
+  whatWentWell String?
+  toImprove    String?
+  mood         Int?
+  notes        String?
+  tags         String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+}
+
+model Strategy {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  rules       String?
+  tags        String?
+  winRate     Float?   // Cached, updated periodically
+  tradeCount  Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Broker {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String
+  platform  String  // "MT5" | "MT4" | "cTrader" | "Binance" | "Bybit"
+  accountId String
+  server    String?
+  username  String?
+  password  String?
+  apiKey    String?
+  apiSecret String?
+
+  isActive  Boolean  @default(true)
+  lastSync  DateTime?
+  status    String   @default("disconnected")
+  currency  String?  @default("USD")
+  leverage  Int?
+  company   String?
+
+  trades    Trade[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, accountId, platform])
+  @@index([userId])
+  @@index([platform])
+}
