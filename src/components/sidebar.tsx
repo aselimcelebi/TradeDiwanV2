@@ -8,8 +8,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, BookOpen, List, FileText, BarChart3,
   Lightbulb, Activity, Play, Trophy, GraduationCap,
-  HelpCircle, Plus, Menu, X, Wifi, LogOut, ChevronDown,
-  TrendingUp, Settings, User,
+  Plus, Menu, X, Wifi, LogOut, TrendingUp,
 } from "lucide-react";
 
 interface NavItem {
@@ -25,12 +24,12 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ onAddTrade }: SidebarProps) {
-  const pathname      = usePathname();
+  const pathname        = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
 
   const mainNav: NavItem[] = [
-    { name: "Dashboard",     href: "/",          icon: LayoutDashboard },
+    { name: "Dashboard",      href: "/",          icon: LayoutDashboard },
     { name: "Günlük Journal", href: "/journal",   icon: BookOpen },
     { name: "İşlemler",       href: "/trades",    icon: List },
     { name: "Notlar",         href: "/notebook",  icon: FileText },
@@ -40,10 +39,10 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
   ];
 
   const comingNav: NavItem[] = [
-    { name: "Backtesting",   href: "/backtesting", icon: Activity,      badge: "Yakında", disabled: true },
-    { name: "Trade Replay",  href: "/replay",      icon: Play,          disabled: true },
-    { name: "Yarışmalar",    href: "/challenges",  icon: Trophy,        badge: "Beta",    disabled: true },
-    { name: "Akademi",       href: "/university",  icon: GraduationCap, disabled: true },
+    { name: "Backtesting",  href: "/backtesting", icon: Activity,      badge: "Yakında", disabled: true },
+    { name: "Trade Replay", href: "/replay",      icon: Play,          disabled: true },
+    { name: "Yarışmalar",   href: "/challenges",  icon: Trophy,        badge: "Beta",    disabled: true },
+    { name: "Akademi",      href: "/university",  icon: GraduationCap, disabled: true },
   ];
 
   const isActive = (href: string) =>
@@ -55,11 +54,11 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
 
     if (item.disabled) {
       return (
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm cursor-not-allowed" style={{ color: "var(--text-muted)" }}>
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm cursor-not-allowed" style={{ color: "rgba(255,255,255,0.25)" }}>
           <Icon className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">{item.name}</span>
           {item.badge && (
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md" style={{ background: "var(--bg-elevated)", color: "var(--text-muted)", border: "1px solid var(--border-subtle)" }}>
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.30)", border: "1px solid rgba(255,255,255,0.08)" }}>
               {item.badge}
             </span>
           )}
@@ -72,13 +71,24 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
         href={item.href}
         onClick={() => setOpen(false)}
         className={cn(
-          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-100",
-          active ? "text-white" : "hover:text-white"
+          "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150",
         )}
         style={{
-          background: active ? "var(--brand-dim)" : "transparent",
-          color: active ? "var(--brand-light)" : "var(--text-secondary)",
-          borderLeft: active ? "2px solid var(--brand)" : "2px solid transparent",
+          background: active ? "rgba(13,148,136,0.20)" : "transparent",
+          color:      active ? "#2dd4bf" : "rgba(255,255,255,0.55)",
+          borderLeft: active ? "2px solid #0d9488" : "2px solid transparent",
+        }}
+        onMouseEnter={e => {
+          if (!active) {
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.85)";
+          }
+        }}
+        onMouseLeave={e => {
+          if (!active) {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.55)";
+          }
         }}
       >
         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -90,13 +100,13 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b" style={{ borderColor: "var(--border-subtle)" }}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "var(--brand)" }}>
+      <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)" }}>
           <TrendingUp className="w-4 h-4 text-white" />
         </div>
         <div>
-          <div className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>TradeDiwan</div>
-          <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>Pro Plan</div>
+          <div className="text-sm font-semibold text-white">TradeDiwan</div>
+          <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.35)" }}>Pro Plan</div>
         </div>
       </div>
 
@@ -104,10 +114,10 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
       <div className="px-4 py-3">
         <button
           onClick={onAddTrade}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
-          style={{ background: "var(--brand)", color: "#fff" }}
-          onMouseEnter={e => (e.currentTarget.style.background = "var(--brand-light)")}
-          onMouseLeave={e => (e.currentTarget.style.background = "var(--brand)")}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all"
+          style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)", color: "#fff", boxShadow: "0 4px 12px rgba(13,148,136,0.35)" }}
+          onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(13,148,136,0.45)")}
+          onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 4px 12px rgba(13,148,136,0.35)")}
         >
           <Plus className="w-4 h-4" />
           İşlem Ekle
@@ -120,7 +130,7 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
 
         {/* Divider */}
         <div className="pt-4 pb-2 px-3">
-          <span className="text-[10px] font-medium uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
+          <span className="text-[10px] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
             Yakında
           </span>
         </div>
@@ -129,27 +139,34 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
       </nav>
 
       {/* User section */}
-      <div className="border-t p-4" style={{ borderColor: "var(--border-subtle)" }}>
+      <div className="p-4" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-            style={{ background: "var(--brand-dim)", color: "var(--brand-light)", border: "1px solid var(--border-default)" }}>
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)", color: "#fff" }}
+          >
             {session?.user?.name?.[0]?.toUpperCase() ?? "T"}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-medium truncate" style={{ color: "var(--text-primary)" }}>
+            <div className="text-xs font-medium truncate text-white">
               {session?.user?.name ?? "Trader"}
             </div>
-            <div className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>
+            <div className="text-[10px] truncate" style={{ color: "rgba(255,255,255,0.35)" }}>
               {session?.user?.email ?? ""}
             </div>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/auth/login" })}
             className="p-1.5 rounded-lg transition-all"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--red)"; (e.currentTarget as HTMLElement).style.background = "var(--red-dim)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-muted)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+            style={{ color: "rgba(255,255,255,0.35)" }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.color = "#ef4444";
+              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.12)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.35)";
+              (e.currentTarget as HTMLElement).style.background = "transparent";
+            }}
             title="Çıkış Yap"
           >
             <LogOut className="w-3.5 h-3.5" />
@@ -163,19 +180,19 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
     <>
       {/* Mobile toggle */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg"
-        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-xl"
+        style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.10)" }}
         onClick={() => setOpen(!open)}
       >
         {open
-          ? <X className="w-5 h-5" style={{ color: "var(--text-primary)" }} />
-          : <Menu className="w-5 h-5" style={{ color: "var(--text-primary)" }} />
+          ? <X className="w-5 h-5 text-white" />
+          : <Menu className="w-5 h-5 text-white" />
         }
       </button>
 
       {/* Mobile backdrop */}
       {open && (
-        <div className="lg:hidden fixed inset-0 bg-black/70 z-40 animate-fade-in" onClick={() => setOpen(false)} />
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40 animate-fade-in" onClick={() => setOpen(false)} />
       )}
 
       {/* Desktop */}
