@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useBroker } from "@/contexts/broker-context";
 import { cn } from "@/lib/utils";
-import {
-  Filter, Calendar, ChevronDown, Building2, Check, LogOut, Settings,
-} from "lucide-react";
+import { Sun, Moon, Filter, Calendar, ChevronDown, Building2, Check, LogOut } from "lucide-react";
+import { useTheme } from "@/contexts/theme-context";
 
 interface FilterOptions {
   symbol:   string;
@@ -57,6 +56,7 @@ export default function Header({
 }: HeaderProps) {
   const { data: session } = useSession();
   const { selectedBrokerId, setSelectedBrokerId } = useBroker();
+  const { theme, toggleTheme } = useTheme();
 
   const [brokers, setBrokers]                 = useState<Broker[]>([]);
   const [filters, setFilters]                 = useState<FilterOptions>({ symbol: "", strategy: "", side: "ALL", outcome: "ALL" });
@@ -136,9 +136,8 @@ export default function Header({
     <header
       className="sticky top-0 z-40 flex items-center justify-between px-6 py-3 gap-3"
       style={{
-        background:     "rgba(240,244,248,0.92)",
-        backdropFilter: "blur(12px)",
-        borderBottom:   "1px solid rgba(15,23,42,0.07)",
+        background:     "var(--bg-base)",
+        borderBottom:   "1px solid var(--border-subtle)",
         minHeight:      "56px",
       }}
     >
@@ -329,6 +328,21 @@ export default function Header({
           </div>
         )}
       </div>
+
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className="flex-shrink-0 p-2 rounded-xl transition-all"
+        style={{ color: "var(--text-secondary)", background: "var(--bg-surface)", border: "1px solid var(--border-default)" }}
+        title={theme === "light" ? "Dark moda geç" : "Light moda geç"}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)"; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)"; }}
+      >
+        {theme === "light"
+          ? <Moon style={{ width: 15, height: 15 }} />
+          : <Sun style={{ width: 15, height: 15, color: "#f59e0b" }} />
+        }
+      </button>
 
       {/* Right: Profile */}
       <div className="relative flex-shrink-0" ref={profileRef}>

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import SessionWrapper from "@/components/session-wrapper";
+import { ThemeProvider } from "@/contexts/theme-context";
 
 export const metadata = {
   title: "TradeDiwan — Professional Trading Journal",
@@ -21,9 +22,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
       <body className="antialiased">
-        <SessionWrapper session={session}>
-          {children}
-        </SessionWrapper>
+        <ThemeProvider>
+          <SessionWrapper session={session}>
+            {children}
+          </SessionWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );
