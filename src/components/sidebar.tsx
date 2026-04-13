@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, BookOpen, List, FileText, BarChart3,
   Lightbulb, Activity, Play, Trophy, GraduationCap,
-  Plus, Menu, X, Wifi, LogOut, TrendingUp,
+  Plus, Menu, X, Wifi, LogOut, TrendingUp, Settings,
 } from "lucide-react";
 
 interface NavItem {
@@ -35,7 +35,8 @@ export default function Sidebar({ onAddTrade }: SidebarProps) {
     { name: "Notlar",         href: "/notebook",  icon: FileText },
     { name: "Raporlar",       href: "/reports",   icon: BarChart3 },
     { name: "Insights",       href: "/insights",  icon: Lightbulb },
-    { name: "Brokerlar",      href: "/brokers",   icon: Wifi },
+    { name: "Brokerlar",      href: "/brokers",   icon: Wifi     },
+    { name: "Ayarlar",        href: "/settings",  icon: Settings },
   ];
 
   const comingNav: NavItem[] = [
